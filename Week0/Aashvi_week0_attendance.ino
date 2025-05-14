@@ -1,0 +1,50 @@
+// https://www.tinkercad.com/things/dAwwuQHcmGp-aashvis-week0-attendance?sharecode=undefined
+
+const int pot1Pin = A0;
+const int pot2Pin = A1;
+
+const int buzzerPins[3] = {2, 3, 4};
+const int ledPins[5] = {5, 6, 7, 8, 9};
+
+int currentLED = 0;
+unsigned long previousMillis = 0;
+int ledDelay = 200;
+
+void setup() {
+  for (int i = 0; i < 3; i++) {
+    pinMode(buzzerPins[i], OUTPUT);
+  }
+  for (int i = 0; i < 5; i++) {
+    pinMode(ledPins[i], OUTPUT);
+  }
+}
+
+void loop() {
+  int pot1Value = analogRead(pot1Pin);
+  for (int i = 0; i < 3; i++) {
+    digitalWrite(buzzerPins[i], LOW);
+  }
+
+  if (pot1Value <= 341) {
+    digitalWrite(buzzerPins[0], HIGH);
+  } else if (pot1Value <= 682) {
+    digitalWrite(buzzerPins[1], HIGH);
+  } else {
+    digitalWrite(buzzerPins[2], HIGH);
+  }
+
+  int pot2Value = analogRead(pot2Pin);
+  ledDelay = map(pot2Value, 0, 1023, 100, 1000);
+
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= ledDelay) {
+    previousMillis = currentMillis;
+
+    for (int i = 0; i < 5; i++) {
+      digitalWrite(ledPins[i], LOW);
+    }
+
+    digitalWrite(ledPins[currentLED], HIGH);
+    currentLED = (currentLED + 1) % 5;
+  }
+}
