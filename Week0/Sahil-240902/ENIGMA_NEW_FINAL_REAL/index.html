@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Enigma Simulator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Special+Elite&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Special Elite', 'Courier New', Courier, monospace;
+      background: #111;
+    }
+    /* --- INTRO SCREEN --- */
+    #intro-screen {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: url('intro-bg.jpg') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: opacity 1s;
+    }
+    #intro-screen::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.7);
+      z-index: 1;
+    }
+    .intro-title {
+      font-family: 'Orbitron', 'Special Elite', monospace;
+      font-size: 2.5em;
+      color: #ffe066;
+      letter-spacing: 0.1em;
+      text-shadow: 0 4px 24px #000, 0 2px 4px #333;
+      z-index: 2;
+      margin-bottom: 40px;
+      position: relative;
+      text-align: center;
+    }
+    #start-btn {
+      position: relative;
+      z-index: 2;
+      padding: 18px 48px;
+      font-size: 1.2em;
+      font-family: 'Orbitron', 'Special Elite', monospace;
+      color: #ffe066;
+      background: linear-gradient(90deg, #222 60%, #444 100%);
+      border: 2px solid #ffe066;
+      border-radius: 8px;
+      box-shadow: 0 0 20px #000a;
+      cursor: pointer;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      outline: none;
+    }
+    #start-btn:hover {
+      background: linear-gradient(90deg, #444 60%, #222 100%);
+      color: #fffbe6;
+      border-color: #fffbe6;
+      box-shadow: 0 0 32px #ffe06655;
+      transform: scale(1.07);
+    }
+    #intro-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s;
+    }
+    /* --- MAIN CONTENT --- */
+    #main-content {
+      min-height: 100vh;
+      width: 100vw;
+      background: url('background.png') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s;
+      z-index: 1;
+    }
+    #main-content.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .main-title {
+      font-family: 'Orbitron', 'Special Elite', monospace;
+      font-size: 2.2em;
+      color: #ffe066;
+      margin-top: 30px;
+      margin-bottom: 30px;
+      text-shadow: 0 4px 24px #000, 0 2px 4px #333;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+    #canvas {
+      display: block;
+      margin: 0 auto 40px auto;
+      background: black;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      position: relative;
+      z-index: 2;
+    }
+    @media (max-width: 600px) {
+      .main-title { font-size: 1.3em; }
+      #canvas { width: 98vw !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- INTRO SCREEN -->
+  <div id="intro-screen">
+    <h1 class="intro-title">ENIGMA SIMULATOR</h1>
+    <button id="start-btn">Start</button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="main-content">
+    <h1 class="main-title">ENIGMA SIMULATOR</h1>
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <script type="module" src="enigma.js"></script>
+  <script>
+    // When Start is clicked, fade out intro and show main content
+    document.getElementById('start-btn').addEventListener('click', function() {
+      document.getElementById('intro-screen').classList.add('fade-out');
+      setTimeout(function() {
+        document.getElementById('main-content').classList.add('visible');
+      }, 1000); // matches fade-out duration
+    });
+  </script>
+</body>
+</html>
