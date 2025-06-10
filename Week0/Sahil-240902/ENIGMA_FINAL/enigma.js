@@ -1,3 +1,4 @@
+console.log("🔧 enigma.js module loaded, exports available:");
 import {
   drawKey, drawLamp, activateKeyDown, activateKeyUp,
   drawRotor, redrawAll, applyPermutation, make_inverse_rotor_permutation
@@ -9,10 +10,11 @@ import {
 } from './constants.js';
 
 export let offsets = [0, 0, 0];
+export let userOffsets=[0,0,0];
 export let enigmaImage;
-
 // Plugboard mapping: { A: "M", M: "A", ... }
 export let plugboardPairs = {};
+export let ctx,canvas;
 
 const keySound4= new Audio("clicksound.wav");
 const keySound1= new Audio("clicksound1.wav");
@@ -24,9 +26,9 @@ const keysound = [keySound1, keySound2, keySound3, keySound4];
 const INVERSE_ROTOR_PERMUTATIONS = make_inverse_rotor_permutation(ROTOR_PERMUTATIONS);
 
 window.onload = function () {
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-
+  canvas = document.getElementById("canvas");
+  ctx = canvas.getContext("2d"); // ✅ now modifies the top-level ctx
+  console.log("🔧 enigma.js module loaded, exports available:");
   enigmaImage = new Image();
   enigmaImage.src = "EnigmaTopView.png";
 
@@ -151,3 +153,7 @@ window.onload = function () {
     }
   };
 };
+
+export function redrawAll_wo_ctx(){
+  redrawAll(ctx,offsets,enigmaImage);
+}

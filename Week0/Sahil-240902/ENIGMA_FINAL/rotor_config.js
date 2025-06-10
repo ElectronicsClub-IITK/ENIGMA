@@ -1,5 +1,5 @@
 import { ROTOR_PERMUTATIONS, ALPHABET } from './constants.js';
-import { offsets } from './enigma.js';
+import { offsets, redrawAll_wo_ctx, userOffsets } from './enigma.js';
 
 const rotorsArea = document.getElementById('rotors-area');
 const offsetArea = document.getElementById('offset-area');
@@ -9,7 +9,6 @@ const rotorSound = new Audio("rotorsound.wav");
 // Rotor data
 let userRotors = ROTOR_PERMUTATIONS.slice(0, 5);
 let selectedRotors = [0, 1, 2]; // Default selected rotors
-let userOffsets = [0, 0, 0];   // Default offsets (A, A, A)
 
 function playRotorSound() {
   rotorSound.currentTime = 0;
@@ -187,7 +186,8 @@ saveBtn.addEventListener('click', () => {
   setTimeout(() => {
     rotorsScreen.style.display = 'none';
     rotorsScreen.style.animation = 'fadeIn 0.4s ease-out';
-    document.getElementById('app-container').style.display = 'flex'; // <-- show main window
+    document.getElementById('app-container').style.display = 'flex';
+    redrawAll_wo_ctx(); // <-- show main window
   }, 350);
 });
 
