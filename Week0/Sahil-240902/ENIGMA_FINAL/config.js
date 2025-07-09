@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const rotorsScreen = document.getElementById('rotors-screen');
   const plugboardBackBtn = document.getElementById('plugboard-back');
   const rotorsBackBtn = document.getElementById('rotors-back');
-
   // Initial screen setup
   document.getElementById('intro-screen').style.display = 'flex';
   document.getElementById('app-container').style.display = 'none';

@@ -110,7 +110,9 @@ html, body {
   text-shadow: 1px 1px 4px #000;
 }
 
-.vintage-btn {
+.vintage-btn,
+.input-box,
+.output-box {
   font-size: 1em;
   font-family: 'Orbitron', monospace;
   padding: 14px 24px;
@@ -123,8 +125,36 @@ html, body {
   text-transform: uppercase;
   letter-spacing: 1px;
   width: 100%;
+  box-sizing: border-box;
   transition: all 0.3s ease;
   box-shadow: 0 0 12px #000a;
+}
+
+.input-box,
+.output-box {
+  height: calc(1.2em * 3 + 28px); /* 3 lines of text + padding */
+  line-height: 1.2em;
+  overflow-y: auto;
+  resize: vertical;
+  resize: none;
+}
+
+
+.input-box:focus,
+.output-box:focus,
+.vintage-btn:hover {
+  background: linear-gradient(to bottom, #444, #2c2c2c);
+  outline: none;
+}
+
+.input-text-text,
+.output-text-text {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.9em;
+  color: #ffe066;
+  text-transform: uppercase;
 }
 
 .vintage-btn:hover {
