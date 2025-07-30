@@ -222,7 +222,6 @@ Function StepRotors():
 
 **Pros:**
 - Direct selection of any letter.
-- Familiar and tactile interface.
 - Easy to implement using libraries (e.g., `Keypad.h`).
 
 **Cons:**
@@ -236,13 +235,11 @@ Function StepRotors():
 
 **Pros:**
 - Only uses 3 pins.
-- Natural feel for scrolling through characters.
 - Button built-in for rotor switching.
 
 **Cons:**
 - Scrolling through 26 letters takes time.
 - Requires rotation direction logic and debounce.
-- Slight learning curve for users unfamiliar with encoders.
 
 ---
 
@@ -271,7 +268,6 @@ An experimental joystick-driven interface inspired by game-style selection wheel
 **Cons:**
 - Requires angle-based letter mapping.
 - Hard to implement without visual feedback.
-- Not suitable for small embedded displays.
 
 ---
 
