@@ -301,11 +301,6 @@ An experimental joystick-driven interface inspired by game-style selection wheel
 
 # XC32 Simulation & Protothread Validation
 
-This module demonstrates peripheral simulation for the PIC32MX250F128B using the XC32 compiler, Protothreads, and MPLAB X IDE.
----
-
-## Platform
-
 - **MCU:** PIC32MX250F128B  
 - **Tools:** MPLAB X IDE, XC32 Compiler  
 - **Libraries:** Protothreads, I2C (SSD1306), UART, Timer2  
@@ -322,10 +317,6 @@ This module demonstrates peripheral simulation for the PIC32MX250F128B using the
 
 ---
 Enigma Machine Hardware Interface
-
-This phase focuses on rapid hardware prototyping for the Enigma Machine using a Zero PCB, integrating a TFT display, joystick, and buttons. The system provides a responsive physical interface for adjusting rotor and ring settings, with real-time feedback on a color screen.
-
----
 
 ## Hardware Summary
 
@@ -350,8 +341,6 @@ Components were soldered to a perforated board for fast, compact assembly. Speci
 - **Left:** User-entered plaintext  
 - **Right:** Encrypted output  
 - **Middle:** Rotor/ring settings, active rotor, and current input mode  
-
-This layout ensures quick visibility and smooth debugging during interaction.
 
 ---
 
@@ -386,7 +375,7 @@ All inputs are reflected immediately on the TFT, providing:
 ---
 Cryptography
 
-## 🔐 Modern Cryptography
+## Modern Cryptography
 
 ### AES – Advanced Encryption Standard (Symmetric)
 - Uses the **same key** for encryption and decryption.
