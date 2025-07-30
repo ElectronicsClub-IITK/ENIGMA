@@ -214,11 +214,9 @@ Function StepRotors():
 
 ---
 
-## Project Component: Physical Input Interface
+## Physical Input Interface
 
-To design a user-friendly input interface that allows real-time manipulation of Enigma machine rotors.
-
-## Hardware Options Compared
+### Hardware Options Compared
 
 ### 1. Matrix Keypad
 
