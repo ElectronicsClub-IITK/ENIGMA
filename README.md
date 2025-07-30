@@ -213,3 +213,262 @@ Function StepRotors():
 ```
 
 ---
+
+## Project Component: Physical Input Interface
+
+To design a user-friendly input interface that allows real-time manipulation of Enigma machine rotors.
+
+## Hardware Options Compared
+
+### 1. Matrix Keypad
+
+**Pros:**
+- Direct selection of any letter.
+- Familiar and tactile interface.
+- Easy to implement using libraries (e.g., `Keypad.h`).
+
+**Cons:**
+- Requires 6+ pins (more wiring complexity).
+- No scrolling support—selection is discrete.
+- Requires debounce and matrix scanning logic.
+
+---
+
+### 2. Rotary Encoder
+
+**Pros:**
+- Only uses 3 pins.
+- Natural feel for scrolling through characters.
+- Button built-in for rotor switching.
+
+**Cons:**
+- Scrolling through 26 letters takes time.
+- Requires rotation direction logic and debounce.
+- Slight learning curve for users unfamiliar with encoders.
+
+---
+
+### 3. Joystick (Final Choice)
+
+**Pros:**
+- Smooth analog scrolling using tilt (Y-axis).
+- Button click switches rotors.
+- Requires only 3 connections (X, Y, button).
+- Debouncing mostly handled via analog thresholds.
+
+**Cons:**
+- Analog input requires calibration.
+- Needs threshold tuning for accuracy.
+
+---
+
+## Alternative Concept: Radial Wheel
+
+An experimental joystick-driven interface inspired by game-style selection wheels.
+
+**Pros:**
+- Fast access to any letter.
+- Intuitive circular navigation.
+
+**Cons:**
+- Requires angle-based letter mapping.
+- Hard to implement without visual feedback.
+- Not suitable for small embedded displays.
+
+---
+
+## GUI Synchronization Logic
+
+###  Original Issues
+- Rotor values shown in the GUI did not always match hardware states.
+- Race conditions between GUI and Arduino caused flickers or mismatches.
+
+### Fixes Implemented
+- Added flags like `last_sent_offsets` and `last_update_from_gui` to avoid redundant or conflicting updates.
+- Shifted to **event-driven communication**:
+  - Updates only triggered by hardware input or GUI action.
+- Standardized serial protocol: ROT A-B-C, RING X-Y-Z
+- GUI parses the incoming message and updates its dropdowns accordingly.
+- Outgoing messages (e.g., `A-B-C\n`) are only sent when the user makes a change.
+
+---
+
+## Plugboard Input Bug & Fix
+
+### Problem
+- The `encrypt_char()` function used `input()` to request plugboard character pairs, which worked in CLI but broke in GUI.
+
+### Solution
+- Plugboard logic moved to `encrypt_message()` for batch configuration.
+- GUI popup introduced for entering plugboard configuration interactively.
+- Configuration stored for the session and reflected in the GUI display.
+
+---
+
+# XC32 Simulation & Protothread Validation
+
+This module demonstrates peripheral simulation for the PIC32MX250F128B using the XC32 compiler, Protothreads, and MPLAB X IDE.
+---
+
+## Platform
+
+- **MCU:** PIC32MX250F128B  
+- **Tools:** MPLAB X IDE, XC32 Compiler  
+- **Libraries:** Protothreads, I2C (SSD1306), UART, Timer2  
+- **Display:** SSD1306 OLED (via I2C)
+
+---
+
+## File Structure
+
+- `main.c` – Application logic and protothreads
+- `uart_handler.c` – UART RX/TX and parsing
+- `oled_display.c` – SSD1306 OLED text rendering
+- `pt_cornell_1_3_2.h` – Protothread definitions
+
+---
+Enigma Machine Hardware Interface
+
+This phase focuses on rapid hardware prototyping for the Enigma Machine using a Zero PCB, integrating a TFT display, joystick, and buttons. The system provides a responsive physical interface for adjusting rotor and ring settings, with real-time feedback on a color screen.
+
+---
+
+## Hardware Summary
+
+### Components Mounted on Zero PCB
+
+- **Arduino Nano** – Main controller running encryption and interface logic  
+- **2.2" ILI9341 TFT Display** – SPI-driven screen for input/output visualization  
+- **Joystick Module** – Used for adjusting rotor and ring settings  
+- **Two Tactile Buttons** – Toggle input modes and switch rotors  
+
+Components were soldered to a perforated board for fast, compact assembly. Special care was taken with voltage level shifting to protect the 3.3V display from 5V logic.
+
+---
+
+## TFT Display Integration
+
+- **Driver:** ILI9341 (SPI protocol, 3.3V logic)  
+- **Library:** [`Ucglib`](https://github.com/olikraus/ucglib) for fast rendering  
+- **Voltage Protection:** SPI lines use voltage dividers to prevent damage  
+
+### UI Layout
+- **Left:** User-entered plaintext  
+- **Right:** Encrypted output  
+- **Middle:** Rotor/ring settings, active rotor, and current input mode  
+
+This layout ensures quick visibility and smooth debugging during interaction.
+
+---
+
+## Input Interface
+
+### Joystick (A0, A1, D2)
+- Tilt to scroll rotor/ring values
+- Press to confirm/reset (optional behavior)
+
+### Buttons
+- **Button 1 (D3):** Toggle between Rotor and Ring modes  
+- **Button 2 (D4):** Cycle through Rotor 1 → Rotor 2 → Rotor 3  
+
+### Real-Time Feedback
+All inputs are reflected immediately on the TFT, providing:
+- Instant visual confirmation  
+- Smooth interaction  
+- Easier detection of logic/input issues  
+
+---
+
+## Circuit Diagram
+
+![Circuit Diagram](circuitd.png)
+
+**Key Connections:**
+- TFT via SPI (MOSI, SCK, CS, DC) with voltage dividers  
+- Joystick → A0 (X), A1 (Y), D2 (press)  
+- Buttons → D3, D4  
+- Power: 5V for Arduino, 3.3V for TFT  
+
+---
+Cryptography
+
+## 🔐 Modern Cryptography
+
+### AES – Advanced Encryption Standard (Symmetric)
+- Uses the **same key** for encryption and decryption.
+- Operates on 128-bit blocks with key sizes of 128/192/256 bits.
+- Internal operations:
+  - **SubBytes** (S-box substitution)
+  - **ShiftRows** (row rotation)
+  - **MixColumns** (column mixing)
+  - **AddRoundKey** (XOR with round key)
+- Fast and suitable for large-scale or real-time encryption.
+
+### RSA – Rivest-Shamir-Adleman (Asymmetric)
+- Uses a **public/private key pair**.
+- Security based on difficulty of factoring large integers.
+- Steps:
+  1. Select primes \( p \), \( q \)
+  2. Compute \( n = pq \), \( \phi(n) = (p-1)(q-1) \)
+  3. Choose public key \( e \)
+  4. Compute private key \( d = e^{-1} \mod \phi(n) \)
+- Used for secure key exchange and digital signatures.
+
+---
+
+## Hardware Implementations
+
+### RSA
+- Uses **Montgomery multiplication** and pipelined modular exponentiation.
+- Implemented on FPGA/ASIC for performance.
+
+### AES
+- Optimized with **ROM-based S-boxes**, **loop unrolling**, and **pipelining**.
+- Hardware AES cores provide 5–10× speedup over software.
+
+### Hybrid AES-RSA
+- **AES** encrypts the message, **RSA** encrypts the AES key.
+- Balances speed and security, ideal for IoT and embedded systems.
+
+---
+
+## Physical-Layer Cryptography
+
+### OFDM-Based Encryption
+- Encrypts data across frequency subcarriers.
+- Uses **CORDIC** modules for real-time trigonometric ops.
+- FPGA implementation offers low-latency protection.
+
+### Physical Security Concepts
+- **PUFs (Physical Unclonable Functions)** for device-bound identity.
+- **Channel-based keying** uses wireless reciprocity.
+- Enhances security using physical randomness.
+
+---
+
+## Enigma and Bombe Cryptanalysis
+
+### Purpose
+The **Bombe** machine automated the process of breaking daily Enigma keys during WWII, using logic-based simulations of rotor wirings and plugboard settings.
+
+### Key Components
+- **Scramblers**: Simulate Enigma rotors and reflector.
+- **Rotor Drums**: Mechanically rotate through 26³ settings.
+- **Diagonal Board**: Cross-checks plugboard logic; filters false positives.
+- **Test Register**: Flags valid, contradiction-free configurations.
+
+### Crib-Based Search
+- A **crib** is a guessed plaintext-ciphertext pair.
+- Used to wire scramblers and identify logical loops.
+- **Loop-based filtering** and **selective steckering** reduced computation time.
+
+### Optimizations
+- **Diagonal Board** allowed early exit on contradiction.
+- **Crib selection strategies** prioritized likely phrases.
+- Still required **manual verification**.
+
+### Limitations
+- Bombe must match exact Enigma model.
+- Could not determine ring settings.
+- Plugboard search space was large.
+- Ineffective without accurate cribs.
