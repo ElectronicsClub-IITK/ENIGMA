@@ -283,7 +283,7 @@ An experimental joystick-driven interface inspired by game-style selection wheel
   - Updates only triggered by hardware input or GUI action.
 - Standardized serial protocol: ROT A-B-C, RING X-Y-Z
 - GUI parses the incoming message and updates its dropdowns accordingly.
-- Outgoing messages (e.g., `A-B-C\n`) are only sent when the user makes a change.
+- Outgoing messages are only sent when the user makes a change.
 
 ---
 
@@ -326,9 +326,6 @@ Enigma Machine Hardware Interface
 - **2.2" ILI9341 TFT Display** – SPI-driven screen for input/output visualization  
 - **Joystick Module** – Used for adjusting rotor and ring settings  
 - **Two Tactile Buttons** – Toggle input modes and switch rotors  
-
-Components were soldered to a perforated board for fast, compact assembly. Special care was taken with voltage level shifting to protect the 3.3V display from 5V logic.
-
 ---
 
 ## TFT Display Integration
@@ -379,17 +376,9 @@ Cryptography
 
 ### AES – Advanced Encryption Standard (Symmetric)
 - Uses the **same key** for encryption and decryption.
-- Operates on 128-bit blocks with key sizes of 128/192/256 bits.
-- Internal operations:
-  - **SubBytes** (S-box substitution)
-  - **ShiftRows** (row rotation)
-  - **MixColumns** (column mixing)
-  - **AddRoundKey** (XOR with round key)
-- Fast and suitable for large-scale or real-time encryption.
 
 ### RSA – Rivest-Shamir-Adleman (Asymmetric)
 - Uses a **public/private key pair**.
-- Security based on difficulty of factoring large integers.
 - Steps:
   1. Select primes \( p \), \( q \)
   2. Compute \( n = pq \), \( \phi(n) = (p-1)(q-1) \)
@@ -444,14 +433,3 @@ The **Bombe** machine automated the process of breaking daily Enigma keys during
 - A **crib** is a guessed plaintext-ciphertext pair.
 - Used to wire scramblers and identify logical loops.
 - **Loop-based filtering** and **selective steckering** reduced computation time.
-
-### Optimizations
-- **Diagonal Board** allowed early exit on contradiction.
-- **Crib selection strategies** prioritized likely phrases.
-- Still required **manual verification**.
-
-### Limitations
-- Bombe must match exact Enigma model.
-- Could not determine ring settings.
-- Plugboard search space was large.
-- Ineffective without accurate cribs.
