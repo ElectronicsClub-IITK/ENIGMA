@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Enigma Simulation (Milestones 7–9)</title>
+
+  <script src="https://cdn.anychart.com/releases/8.13.0/js/graphics.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+ 
+  <div id="container" style="width: 800px; height: 600px;"></div>
+
+  <script>
+ 
+  function lToI(ch) {
+    return ch.charCodeAt(0) - 'A'.charCodeAt(0);
+  }
+
+  function iToL(i) {
+    return String.fromCharCode((i + 26) % 26 + 'A'.charCodeAt(0));
+  }
+
+ // Milestone 7
+  class Rotor {
+    constructor(permutation) {
+      this.permutation = permutation;
+      this.offset = 0; // 'A'
+    }
+
+    rotorAdvance() {
+      this.offset = (this.offset + 1) % 26;
+      return this.offset === 0; 
+    }
+
+    encodeForward(i) {
+      let shifted = (i + this.offset) % 26;
+      let letter = this.permutation[shifted];
+      let outIdx = (lToI(letter) - this.offset + 26) % 26;
+      return outIdx;
+    }
+
+    encodeBackward(i) {
+      let shifted = (i + this.offset) % 26;
+      let targetLetter = iToL(shifted);
+      let pos = this.permutation.indexOf(targetLetter);
+      let outIdx = (pos - this.offset + 26) % 26;
+      return outIdx;
+    }
+  }
+
+  
+  const ROTOR_I   = "EKMFLGDQVZNTOWYHXUSPAIBRCJ";
+  const ROTOR_II  = "AJDKSIRUXBLHWTMCQGZNPYFVOE";
+  const ROTOR_III = "BDFHJLCPRTXVZNYEIWGAKMUSQO";
+  const REFLECTOR = "IXUHFEZDAOMTKQJWNSRLCYPBVG";
+
+ 
+  let sRotor = new Rotor(ROTOR_I);
+  let mRotor  = new Rotor(ROTOR_II);
+  let fRotor = new Rotor(ROTOR_III);
+
+  //Milestone 8
+  function encryptLetter(ch) {
+    let i = lToI(ch);
+    i = fRotor.encodeForward(i);
+    i = mRotor.encodeForward(i);
+    i = sRotor.encodeForward(i);
+
+    let reflectedChar = REFLECTOR[i];
+    i = lToI(reflectedChar);
+
+    i = sRotor.encodeBackward(i);
+    i = mRotor.encodeBackward(i);
+    i = fRotor.encodeBackward(i);
+
+    return iToL(i);
+  }
+
+  //Milestone 9
+  function pressKey(ch) {
+   
+    let carry = fRotor.rotorAdvance();
+    if (carry) {
+      carry = mRotor.rotorAdvance();
+      if (carry) {
+        sRotor.rotorAdvance();
+      }
+    }
+
+    
+    rotorText[0].text(iToL(sRotor.offset));
+    rotorText[1].text(iToL(mRotor.offset));
+    rotorText[2].text(iToL(fRotor.offset));
+
+   
+    let encrypted = encryptLetter(ch);
+    outputLamp.text(encrypted);
+  }
+
+
+  let stage = acgraph.create("container");
+
+  
+  const rotorText = [];
+  const rotorLabels = ["Slow", "Middle", "Fast"];
+  for (let i = 0; i < 3; i++) {
+    let x = 100 + i * 200;
+    stage.rect(x - 20, 30, 40, 40).fill("#dddddd").stroke("black");
+    stage.text(x - 25, 15, rotorLabels[i]).fontSize(14).fontWeight("bold");
+    rotorText[i] = stage.text(x, 50, "A").fontSize(24).fontWeight("bold");
+  }
+
+ //Lamp Graphic
+  stage.text(650, 40, "Lamp:").fontSize(20);
+  let outputLamp = stage.text(700, 45, "-").fontSize(40).fill("red");
+
+  //Keyboard Graphic
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const keyStartX = 50, keyStartY = 130, spacing = 30;
+  for (let i = 0; i < letters.length; i++) {
+    let ch = letters[i];
+    let x = keyStartX + (i % 13) * spacing;
+    let y = keyStartY + Math.floor(i / 13) * 50;
+
+    //text as button
+    stage.text(x, y, ch)
+      .fontSize(22)
+      .cursor("pointer")
+      .listen("click", () => {
+        pressKey(ch);
+      });
+  }
+  </script>
+</body>
+</html>
